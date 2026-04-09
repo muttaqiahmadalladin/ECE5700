@@ -1,0 +1,56 @@
+{
+  "plan_name": "paper_extended",
+  "output_root": "outputs/paper_extended",
+  "shared": {
+    "model_name": "google/vit-base-patch16-224-in21k",
+    "dataset_name": "cifar10",
+    "epochs": 3,
+    "micro_batch_size": 32,
+    "eval_batch_size": 128,
+    "grad_accum_steps": 2,
+    "lr_full_ft": 5e-05,
+    "lr_head_only": 0.0002,
+    "lr_lora": 0.0002,
+    "weight_decay": 0.01,
+    "rank": 8,
+    "alpha": 16,
+    "dropout": 0.05,
+    "target_modules": ["query", "value"],
+    "num_workers": 8,
+    "log_every": 50
+  },
+  "suites": [
+    {
+      "name": "target_module_ablation",
+      "base": {
+        "train_size": 10000,
+        "val_size": 5000
+      },
+      "grid": {
+        "method": ["lora", "pissa_lora"],
+        "target_modules": [
+          ["query", "value"],
+          ["query", "key", "value"]
+        ],
+        "seed": [7, 42, 123]
+      }
+    },
+    {
+      "name": "long_run",
+      "base": {
+        "train_size": 50000,
+        "val_size": 10000,
+        "epochs": 5,
+        "micro_batch_size": 32,
+        "eval_batch_size": 128,
+        "grad_accum_steps": 4,
+        "log_every": 100
+      },
+      "grid": {
+        "method": ["lora", "pissa_lora"],
+        "seed": [7, 42, 123]
+      }
+    }
+  ]
+}
+

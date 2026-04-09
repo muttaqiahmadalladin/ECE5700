@@ -1,0 +1,30 @@
+{
+  "plan_name": "smoke",
+  "output_root": "outputs/smoke",
+  "shared": {
+    "model_name": "google/vit-base-patch16-224-in21k",
+    "dataset_name": "cifar10",
+    "epochs": 1,
+    "micro_batch_size": 8,
+    "eval_batch_size": 16,
+    "grad_accum_steps": 1,
+    "num_workers": 0,
+    "log_every": 5,
+    "max_train_batches": 2,
+    "max_eval_batches": 2
+  },
+  "suites": [
+    {
+      "name": "smoke",
+      "base": {
+        "train_size": 64,
+        "val_size": 64
+      },
+      "grid": {
+        "method": ["linear_probe", "lora"],
+        "seed": [42]
+      }
+    }
+  ]
+}
+

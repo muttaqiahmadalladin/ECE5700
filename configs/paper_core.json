@@ -1,0 +1,71 @@
+{
+  "plan_name": "paper_core",
+  "output_root": "outputs/paper_core",
+  "shared": {
+    "model_name": "google/vit-base-patch16-224-in21k",
+    "dataset_name": "cifar10",
+    "epochs": 3,
+    "micro_batch_size": 32,
+    "eval_batch_size": 128,
+    "grad_accum_steps": 2,
+    "lr_full_ft": 5e-05,
+    "lr_head_only": 0.0002,
+    "lr_lora": 0.0002,
+    "weight_decay": 0.01,
+    "rank": 8,
+    "alpha": 16,
+    "dropout": 0.05,
+    "target_modules": ["query", "value"],
+    "num_workers": 8,
+    "log_every": 50
+  },
+  "suites": [
+    {
+      "name": "quick_ablation",
+      "base": {
+        "train_size": 5000,
+        "val_size": 2000,
+        "micro_batch_size": 16,
+        "eval_batch_size": 128,
+        "grad_accum_steps": 4,
+        "log_every": 25
+      },
+      "grid": {
+        "method": ["linear_probe", "full_ft", "lora", "pissa_lora"],
+        "seed": [7, 42, 123]
+      }
+    },
+    {
+      "name": "data_regime",
+      "base": {
+        "val_size": 5000,
+        "micro_batch_size": 32,
+        "eval_batch_size": 128,
+        "grad_accum_steps": 2,
+        "log_every": 50
+      },
+      "grid": {
+        "method": ["lora", "pissa_lora"],
+        "train_size": [1000, 5000, 10000, 50000],
+        "seed": [7, 42, 123]
+      }
+    },
+    {
+      "name": "rank_ablation",
+      "base": {
+        "train_size": 10000,
+        "val_size": 5000,
+        "micro_batch_size": 32,
+        "eval_batch_size": 128,
+        "grad_accum_steps": 2,
+        "log_every": 50
+      },
+      "grid": {
+        "method": ["lora", "pissa_lora"],
+        "rank": [4, 8, 16, 32],
+        "seed": [7, 42, 123]
+      }
+    }
+  ]
+}
+
